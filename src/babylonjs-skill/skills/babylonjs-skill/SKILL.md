@@ -1,6 +1,6 @@
 ---
 name: babylonjs-skill
-description: Build, explain, debug, optimize, and migrate Babylon.js 9.12.0 code across web application contexts. Use for apps, components, services, or framework integrations using Babylon.js, @babylonjs/core, @babylonjs/loaders, @babylonjs/gui, @babylonjs/havok, WebXR, glTF/GLB loading, PBR materials, pure imports, tree-shaking, side-effect registration, render-loop lifecycle, SSR/hydration issues, performance tuning, or converting Three.js snippets to Babylon.js. Use framework-specific references, such as Angular guidance, only when the target stack calls for them. Do not use for generic Three.js-only work unless the user is explicitly migrating to Babylon.js.
+description: Generate, debug, optimize, and migrate Babylon.js 9.12.0 web app code. Use for Babylon.js, @babylonjs/core, glTF/GLB loading, WebXR, PBR, Havok physics, GUI, pure imports, tree-shaking, SSR/client lifecycle issues, or converting Three.js code to Babylon.js. Do not use for Three.js-only work unless migrating.
 ---
 
 # Babylon.js Skill
@@ -11,6 +11,7 @@ Use this skill to produce Babylon.js 9.12.0 code for web applications and framew
 
 - Assume Babylon.js 9.12.0 unless the user asks for another version.
 - Prefer official Babylon.js docs, TypeDoc, changelog, breaking-changes notes, and official examples before community answers.
+- Read `references/source-corpus.md` when the task needs research, version-sensitive APIs, unfamiliar features, exact import paths, or diagnosis of specific runtime/build errors.
 - Default to TypeScript for application code, not plain HTML snippets, unless the user asks for a standalone demo or repro.
 - Prefer standard imports from `@babylonjs/core` for normal application code.
 - Use `@babylonjs/core/pure` only when the user asks for aggressive tree-shaking, bundle reduction, or pure imports.
@@ -47,6 +48,7 @@ Choose references based on the user's target stack after inspecting the project 
 
 Current references:
 
+- Read `references/source-corpus.md` when researching official docs, TypeDoc, changelogs, examples, forum errors, or GitHub issues.
 - Read `references/angular-patterns.md` when generating or reviewing Angular components, services, directives, SSR-safe code, or lifecycle cleanup.
 
 Framework-neutral integration guidance:

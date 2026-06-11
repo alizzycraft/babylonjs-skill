@@ -45,6 +45,7 @@ Rules:
 
 - Prefer module-level loader functions such as `ImportMeshAsync`, `LoadAssetContainerAsync`, or `AppendSceneAsync`.
 - Use `registerBuiltInLoaders()` for common loader coverage.
+- Call `registerBuiltInLoaders()` once at module/app setup level when possible. In small examples it may appear near the load call for clarity, but avoid repeated registration in hot paths or frequently recreated components.
 - For stricter bundle control, import only the specific loader package/module required by the app.
 - If loader errors appear only in production, suspect tree-shaking or missing registration before rewriting scene logic.
 
@@ -70,14 +71,16 @@ Dispose GUI textures and remove observers when they are component-owned.
 Use `@babylonjs/havok` and Babylon physics classes:
 
 ```ts
-import { HavokPlugin, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core/Physics/v2";
+import { HavokPlugin, PhysicsAggregate, PhysicsShapeType, Vector3 } from "@babylonjs/core";
 import HavokPhysics from "@babylonjs/havok";
 
 const havok = await HavokPhysics();
 scene.enablePhysics(new Vector3(0, -9.81, 0), new HavokPlugin(true, havok));
 ```
 
-For older code or compatibility support, avoid reusing mutable aggregate options objects across many `PhysicsAggregate` instances.
+- Prefer documented/top-level imports for physics helpers when they are available. For Babylon.js 9.12.0, `HavokPlugin`, `PhysicsAggregate`, and `PhysicsShapeType` are available through `@babylonjs/core` via the top-level physics exports.
+- If using deep physics imports such as `@babylonjs/core/Physics/v2`, verify them against the installed `@babylonjs/core` version before emitting final code.
+- For older code or compatibility support, avoid reusing mutable aggregate options objects across many `PhysicsAggregate` instances.
 
 ## Common Registration Symptoms
 

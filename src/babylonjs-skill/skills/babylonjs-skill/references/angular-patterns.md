@@ -77,6 +77,71 @@ export class BabylonViewerComponent implements AfterViewInit {
 - In SSR projects, initialize with a browser guard such as `isPlatformBrowser`, `afterNextRender`, or a client-only route/component pattern already used by the repo.
 - Lazy-load optional tooling such as `@babylonjs/inspector` on the client; do not import it at top level in SSR code.
 
+### SSR-Safe Angular Component
+
+Use this shape when the project has Angular SSR/hydration and does not already have a stronger client-only component pattern.
+
+```ts
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  Inject,
+  NgZone,
+  PLATFORM_ID,
+  ViewChild,
+  inject,
+} from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import { Engine, Scene, ArcRotateCamera, HemisphericLight, MeshBuilder, Vector3 } from "@babylonjs/core";
+
+@Component({
+  selector: "app-babylon-viewer",
+  standalone: true,
+  template: `<canvas #canvas class="render-canvas"></canvas>`,
+  styles: [`
+    :host { display: block; width: 100%; height: 100%; }
+    .render-canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+  `],
+})
+export class BabylonViewerComponent implements AfterViewInit {
+  @ViewChild("canvas", { static: true }) private canvasRef!: ElementRef<HTMLCanvasElement>;
+
+  private readonly zone = inject(NgZone);
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
+
+  ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    this.zone.runOutsideAngular(() => {
+      const canvas = this.canvasRef.nativeElement;
+      const engine = new Engine(canvas, true);
+      const scene = new Scene(engine);
+
+      const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 6, Vector3.Zero(), scene);
+      camera.attachControl(canvas, true);
+      new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+      MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
+
+      const onResize = () => engine.resize();
+      window.addEventListener("resize", onResize);
+      engine.runRenderLoop(() => scene.render());
+
+      this.destroyRef.onDestroy(() => {
+        window.removeEventListener("resize", onResize);
+        scene.dispose();
+        engine.dispose();
+      });
+    });
+  }
+}
+```
+
 ## Services And Ownership
 
 - Use a service when multiple components share scene creation, asset loading, or engine lifecycle.
