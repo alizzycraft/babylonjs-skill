@@ -1,0 +1,33 @@
+{
+  "name": "babylonjs-skill",
+  "version": "0.1.0",
+  "description": "A Codex plugin for Babylon.js 9.12.0 code generation, debugging, migration, and optimization in web apps.",
+  "author": {
+    "name": "alizzycraft"
+  },
+  "license": "AGPL-3.0-only",
+  "keywords": [
+    "babylonjs",
+    "framework-integration",
+    "webgl",
+    "webxr",
+    "gltf"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Babylon.js Skill",
+    "shortDescription": "Babylon.js 9.12.0 guidance for web apps.",
+    "longDescription": "Build, debug, optimize, and migrate Babylon.js 9.12.0 scenes in web applications, with guidance for imports, loaders, assets, framework lifecycle cleanup, WebXR, physics, and Three.js migration.",
+    "developerName": "alizzycraft",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use Babylon.js Skill to build a web app scene.",
+      "Use Babylon.js Skill to debug this loader error.",
+      "Use Babylon.js Skill to migrate this Three.js code."
+    ]
+  }
+}
