@@ -23,7 +23,21 @@ For repo-local skill discovery instead, the skill contents would need to live un
 .agents/skills/babylonjs-skill/agents/openai.yaml
 ```
 
-Avoid maintaining both layouts manually unless there is a sync step, because duplicated skill files can drift.
+Avoid maintaining both layouts manually. The `.agents` directory is ignored in `.gitignore` to prevent duplicate files in the repository. You can run the sync script to automatically sync from the plugin directory to the local agent skills directory for local development testing:
+
+```bash
+node scripts/sync-skills.js
+```
+
+## Usage
+
+Install or enable the plugin from `src/babylonjs-skill` using the Codex plugin flow. For local development, run Codex from the repository root and explicitly invoke the skill/plugin when testing prompts.
+
+Example prompts:
+
+- Use Babylon.js Skill to create a Vite TypeScript scene.
+- Use Babylon.js Skill to diagnose this GLB loader error.
+- Use Babylon.js Skill to migrate this Three.js snippet.
 
 ## License
 

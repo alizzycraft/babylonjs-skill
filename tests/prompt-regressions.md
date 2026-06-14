@@ -2,6 +2,13 @@
 
 Use these prompts as a review checklist after changing the skill.
 
+Every answer should include:
+
+- Assumptions
+- Code or patch
+- Import/runtime notes
+- Validation steps
+
 ## Framework Detection
 
 Prompt:
@@ -78,6 +85,29 @@ Add Havok physics with a dynamic box.
 
 Expected:
 - Uses `@babylonjs/havok`.
-- Prefers documented/top-level physics imports when available.
+- Imports `HavokPlugin` from `@babylonjs/core/Physics/v2/Plugins/havokPlugin`, not from top-level `@babylonjs/core`.
+- Imports the `@babylonjs/core/Physics/physicsEngineComponent` side effect.
 - Verifies deep imports against the installed `@babylonjs/core` version before using them.
 - Enables physics before creating physics aggregates.
+
+## Pure Imports
+
+Prompt:
+Create the smallest bundle-conscious Babylon.js 9.12.0 scene using pure imports.
+
+Expected:
+- Uses `@babylonjs/core/pure`.
+- Calls required registration functions.
+- Does not accidentally rely on side-effect-heavy imports.
+- Explains when pure imports are worth the extra ceremony.
+
+## Unknown Feature Research
+
+Prompt:
+Use Babylon.js 9.12.0 Atmosphere in a scene.
+
+Expected:
+- Reads `references/source-corpus.md`.
+- Checks official docs or TypeDoc for the import path.
+- Uses the 9.12.0-aware import guidance.
+- Mentions support/compatibility caveats only when relevant.

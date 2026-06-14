@@ -87,7 +87,6 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  Inject,
   NgZone,
   PLATFORM_ID,
   ViewChild,
@@ -110,8 +109,9 @@ export class BabylonViewerComponent implements AfterViewInit {
 
   private readonly zone = inject(NgZone);
   private readonly destroyRef = inject(DestroyRef);
-
-  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
+  private readonly platformId = inject(PLATFORM_ID);
+  private engine?: Engine;
+  private scene?: Scene;
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
@@ -132,6 +132,8 @@ export class BabylonViewerComponent implements AfterViewInit {
       window.addEventListener("resize", onResize);
       engine.runRenderLoop(() => scene.render());
 
+      this.engine = engine;
+      this.scene = scene;
       this.destroyRef.onDestroy(() => {
         window.removeEventListener("resize", onResize);
         scene.dispose();

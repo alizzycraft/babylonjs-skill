@@ -14,6 +14,19 @@ Use this reference when a task needs current or version-sensitive Babylon.js det
 
 Prefer official docs, TypeDoc, changelog, and examples before forum or GitHub discussion. Use forum/GitHub results mainly for exact error triage, missing import side effects, bundler behavior, or version regressions.
 
+## Canonical Pages
+
+Use these exact page/document names when searching for authoritative Babylon.js information:
+
+- Docs home: Babylon.js documentation
+- TypeDoc: Babylon.js TypeDoc API reference
+- Changelog: BabylonJS/Babylon.js CHANGELOG.md
+- Breaking changes: Babylon.js Documentation breaking-changes.md
+- Tree shaking: ES6 support / tree-shaking docs
+- Loading file types: importers/loadingFileTypes.md
+- Physics: Using Havok Physics plugin documentation
+- WebXR: WebXR Experience Helpers documentation
+
 ## Search Patterns
 
 - `site:doc.babylonjs.com Babylon.js <feature>`
@@ -28,6 +41,7 @@ Prefer official docs, TypeDoc, changelog, and examples before forum or GitHub di
 
 ## Research Rules
 
+- Use your web search tool to explicitly run the search patterns above; do not attempt to guess or hallucinate API signatures.
 - Check installed package versions first when working inside an existing repo.
 - Verify import paths against the installed `@babylonjs/*` package version before emitting final code for deep imports or pure imports.
 - Treat TypeDoc signatures and installed type declarations as stronger evidence than old snippets.

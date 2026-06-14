@@ -60,12 +60,4 @@ For performance:
 
 ## Validation Prompts
 
-Use these prompts to sanity-check the skill after edits:
-
-- Create a framework-integrated Babylon.js 9.12.0 PBR sphere with ArcRotateCamera, resize handling, and cleanup.
-- Create an Angular standalone component for a Babylon.js 9.12.0 PBR sphere using the Angular reference.
-- Load a GLB from a public assets directory and explain the imports and loader registration.
-- Translate a Three.js `OrbitControls` plus `GLTFLoader` snippet to Babylon.js.
-- Diagnose `AudioSceneComponent needs to be imported before...` in a production app build.
-- Add WebXR floor support to an existing Babylon scene.
-- Optimize 10,000 repeated props in a Babylon scene.
+For validation checks after modifying the skill, refer to `tests/prompt-regressions.md`.

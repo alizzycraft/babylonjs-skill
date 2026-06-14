@@ -71,15 +71,21 @@ Dispose GUI textures and remove observers when they are component-owned.
 Use `@babylonjs/havok` and Babylon physics classes:
 
 ```ts
-import { HavokPlugin, PhysicsAggregate, PhysicsShapeType, Vector3 } from "@babylonjs/core";
+import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
+import { PhysicsAggregate } from "@babylonjs/core/Physics/v2/physicsAggregate";
+import { PhysicsShapeType } from "@babylonjs/core/Physics/v2/IPhysicsEnginePlugin";
+import { Vector3 } from "@babylonjs/core";
+import "@babylonjs/core/Physics/physicsEngineComponent";
 import HavokPhysics from "@babylonjs/havok";
 
 const havok = await HavokPhysics();
 scene.enablePhysics(new Vector3(0, -9.81, 0), new HavokPlugin(true, havok));
 ```
 
-- Prefer documented/top-level imports for physics helpers when they are available. For Babylon.js 9.12.0, `HavokPlugin`, `PhysicsAggregate`, and `PhysicsShapeType` are available through `@babylonjs/core` via the top-level physics exports.
-- If using deep physics imports such as `@babylonjs/core/Physics/v2`, verify them against the installed `@babylonjs/core` version before emitting final code.
+- `HavokPlugin` is not a top-level `@babylonjs/core` export; it must be imported from `@babylonjs/core/Physics/v2/Plugins/havokPlugin`. It is excluded from the barrel because it depends on the external `@babylonjs/havok` WASM module.
+- `PhysicsAggregate` and `PhysicsShapeType` are available as top-level `@babylonjs/core` exports, but deep imports are preferred for tree-shaking.
+- Import `@babylonjs/core/Physics/physicsEngineComponent` as a side effect to enable physics on `Scene`.
+- Verify deep physics import paths against the installed `@babylonjs/core` version before emitting final code.
 - For older code or compatibility support, avoid reusing mutable aggregate options objects across many `PhysicsAggregate` instances.
 
 ## Common Registration Symptoms
