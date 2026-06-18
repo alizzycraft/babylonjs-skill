@@ -26,6 +26,61 @@ Call out coordinate and scene graph differences:
 - Babylon supports `scene.useRightHandedSystem`, but glTF loading and handedness need deliberate handling.
 - Use `TransformNode` for non-renderable grouping instead of empty meshes.
 
+## External Image Orientation
+
+Treat DOM/canvas-to-Babylon orientation as a rendering-boundary problem, not as a generic world-coordinate conversion.
+
+- DOM and canvas image data commonly use a top-left origin.
+- Babylon plane sampling may require `V -> 1 - V`.
+- `Texture.invertY` controls texture loading or upload behavior. It does not retroactively transform pixel data in an externally wrapped `GPUTexture`.
+- For `StandardMaterial`, `PBRMaterial`, and other shaders that consume Babylon's texture matrix, normalize vertical sampling at the texture adapter boundary:
+
+```ts
+texture.vScale = -1;
+texture.vOffset = 1;
+```
+
+- Custom `ShaderMaterial` code must apply `texture.getTextureMatrix()` or perform the equivalent UV transformation itself.
+- Do not compensate for texture orientation by moving the camera, changing handedness, or applying negative mesh/world scaling.
+- Viewing a textured plane from behind produces a genuine horizontal reflection from the viewer's perspective.
+- `backFaceCulling = false` can conceal an incorrect camera/face relationship by allowing the mirrored back face to render.
+
+Establish canonical scene transforms, handedness, and front-face orientation first. Normalize external image orientation once at the texture adapter boundary.
+
+Use an asymmetric corner test image to distinguish flips and rotations:
+
+```text
+TL red    TR green
+BL blue   BR yellow
+```
+
+| Observed output | Likely cause |
+|---|---|
+| Top/bottom swapped | Texture-origin mismatch or V inversion |
+| Left/right swapped | Back-face viewing or U inversion |
+| Both swapped | 180-degree rotation or both UV axes inverted |
+| Raw GPU texture correct, rendered output wrong | Babylon sampling, UV, material, or mesh boundary |
+| Raw GPU texture already wrong | Capture, copy, upload, or readback boundary |
+
+Treat these as diagnostic leads, not proof. GPU readback also has an orientation convention, so "raw texture correct" is meaningful only after interpreting rows with a known origin.
+
+During diagnosis, compute the world-space relationship explicitly:
+
+```ts
+const planeFrontNormal = Vector3.TransformNormal(
+  new Vector3(0, 0, -1),
+  plane.getWorldMatrix(),
+).normalize();
+
+const planeToCamera = camera.globalPosition
+  .subtract(plane.getAbsolutePosition())
+  .normalize();
+
+const frontFacingDot = Vector3.Dot(planeFrontNormal, planeToCamera);
+```
+
+With `planeToCamera` defined from the plane toward the camera, a positive value means the camera is on the intended front side. Babylon's default plane front normal is local `-Z`; do not assume `plane.forward` is the front normal. If the plane was created with `BACKSIDE`, uses custom geometry, or has unusual transforms, derive the normal from its actual geometry and side orientation.
+
 ## Babylon.js 9.12.0 Notes
 
 Surface these only when relevant:
@@ -48,6 +103,7 @@ For runtime errors:
 4. Check asset URLs in the browser network panel.
 5. Check disposal if the bug appears after route changes or component remounts.
 6. Check version-specific fixes if the issue involves CSG2, post-process shaders, physics aggregates, or skinning.
+7. For flipped DOM, canvas, video, or external GPU textures, isolate capture orientation, texture sampling, and plane face orientation before changing world transforms.
 
 For performance:
 
